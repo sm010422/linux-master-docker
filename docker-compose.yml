@@ -1,0 +1,72 @@
+services:
+
+  # ══════════════════════════════════════════════════════════════════════════
+  # server1 — 주 서버 (httpd, DNS, FTP, Samba, NFS, MariaDB, Postfix 실습)
+  # 접속: ssh root@localhost -p 2201  /  비밀번호: toor
+  # 웹:   http://localhost:8080
+  # ══════════════════════════════════════════════════════════════════════════
+  server1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: linux-server1
+    hostname: server1.linux.local
+    privileged: true
+    cgroupns_mode: host
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - server1_home:/home
+      - server1_www:/var/www/html
+      - server1_data:/data
+    ports:
+      - "2201:22"     # SSH
+      - "8080:80"     # HTTP
+      - "8443:443"    # HTTPS
+      - "2121:21"     # FTP
+    networks:
+      study_net:
+        ipv4_address: 172.30.0.10
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+  # ══════════════════════════════════════════════════════════════════════════
+  # server2 — 보조 서버 (클라이언트 역할, 서버↔서버 통신 실습)
+  # 접속: ssh root@localhost -p 2202  /  비밀번호: toor
+  # ══════════════════════════════════════════════════════════════════════════
+  server2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: linux-server2
+    hostname: server2.linux.local
+    privileged: true
+    cgroupns_mode: host
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - server2_home:/home
+    ports:
+      - "2202:22"     # SSH
+    networks:
+      study_net:
+        ipv4_address: 172.30.0.20
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+# ── 네트워크 ──────────────────────────────────────────────────────────────
+networks:
+  study_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.30.0.0/24
+          gateway: 172.30.0.1
+
+# ── 볼륨 (컨테이너 재시작해도 데이터 유지) ────────────────────────────────
+volumes:
+  server1_home:
+  server1_www:
+  server1_data:
+  server2_home:
