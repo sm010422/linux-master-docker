@@ -12,7 +12,6 @@ services:
     container_name: linux-server1
     hostname: server1.linux.local
     privileged: true
-    cgroupns_mode: host
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
       - server1_home:/home
@@ -41,7 +40,6 @@ services:
     container_name: linux-server2
     hostname: server2.linux.local
     privileged: true
-    cgroupns_mode: host
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
       - server2_home:/home
