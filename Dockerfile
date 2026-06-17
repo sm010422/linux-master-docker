@@ -1,6 +1,6 @@
-FROM rockylinux:9
+FROM rockylinux:8
 
-LABEL description="리눅스 마스터 1급/2급 학습 환경 (Rocky Linux 9 + systemd)"
+LABEL description="리눅스 마스터 1급/2급 학습 환경 (Rocky Linux 8 + systemd)"
 ENV container=docker
 
 # ─── 저장소 추가 및 전체 패키지 설치 ───────────────────────────────────────────
