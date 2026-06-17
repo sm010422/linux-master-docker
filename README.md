@@ -445,8 +445,26 @@ linux-master-docker/
 ├── Dockerfile          # Rocky Linux 8 기반 이미지 정의
 ├── docker-compose.yml  # 이미지 빌드 및 네트워크/볼륨 정의 (컨테이너 실행은 Makefile 사용)
 ├── Makefile            # 빌드 · 시작 · 종료 · SSH 접속 단축 명령어
+├── docs/
+│   └── troubleshooting.md  # 자주 발생하는 문제 해결 가이드
 └── README.md           # 이 문서
 ```
+
+---
+
+## 트러블슈팅
+
+문제가 발생하면 **[docs/troubleshooting.md](docs/troubleshooting.md)** 를 참고하세요.
+
+자주 발생하는 문제:
+
+| 증상 | 원인 요약 | 문서 |
+|------|-----------|------|
+| `cgroupns_mode not allowed` 오류 | Docker Compose v5 스키마 제한 | [#1](docs/troubleshooting.md#1-docker-compose-up-실행-시-cgroupns_mode-오류) |
+| SSH 연결이 즉시 끊김 | systemd가 cgroup 생성 실패 (freeze) | [#2](docs/troubleshooting.md#2-컨테이너가-시작되지만-ssh-연결이-즉시-끊김) |
+| SSH 비밀번호 인증 실패 | shadow 권한·nsswitch·PAM 복합 문제 | [#3](docs/troubleshooting.md#3-ssh-비밀번호-인증-실패-permission-denied) |
+| `xinetd` 설치 실패 | Rocky Linux 9에서 패키지 제거됨 | [#4](docs/troubleshooting.md#4-xinetd-패키지-설치-실패) |
+| `REMOTE HOST IDENTIFICATION HAS CHANGED` | 이미지 재빌드 후 호스트키 변경 | [#5](docs/troubleshooting.md#5-ssh-접속-시-warning-remote-host-identification-has-changed) |
 
 ---
 
