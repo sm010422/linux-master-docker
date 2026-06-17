@@ -83,6 +83,23 @@ RUN sed -i \
 # ─── Apache 기본 설정 ────────────────────────────────────────────────────────
 RUN echo "ServerName localhost" >> /etc/httpd/conf/httpd.conf
 
+# ─── 쉘 환경 설정 (컬러 프롬프트 + 편의 alias) ──────────────────────────────
+RUN printf '%s\n' \
+    "alias ls='ls --color=auto'" \
+    "alias l='ls -alF'" \
+    "alias ll='ls -lF'" \
+    "alias la='ls -A'" \
+    "alias grep='grep --color=auto'" \
+    "alias df='df -h'" \
+    "alias du='du -h'" \
+    "alias free='free -h'" \
+    "if [ \"\$(id -u)\" -eq 0 ]; then" \
+    "    PS1='\[\e[01;31m\]\u\[\e[0m\]@\[\e[01;33m\]\h\[\e[0m\]:\[\e[01;34m\]\w\[\e[0m\]\\$ '" \
+    "else" \
+    "    PS1='\[\e[01;32m\]\u\[\e[0m\]@\[\e[01;33m\]\h\[\e[0m\]:\[\e[01;34m\]\w\[\e[0m\]\\$ '" \
+    "fi" \
+    > /etc/profile.d/custom.sh
+
 # ─── PAM / NSS 설정 (컨테이너 환경 최적화) ──────────────────────────────────
 # SSSD 없이 files 기반 인증만 사용 (sssd 미실행 시 getspnam 실패 방지)
 RUN authselect select minimal --force
