@@ -83,6 +83,13 @@ RUN sed -i \
 # ─── Apache 기본 설정 ────────────────────────────────────────────────────────
 RUN echo "ServerName localhost" >> /etc/httpd/conf/httpd.conf
 
+# ─── PAM / NSS 설정 (컨테이너 환경 최적화) ──────────────────────────────────
+# SSSD 없이 files 기반 인증만 사용 (sssd 미실행 시 getspnam 실패 방지)
+RUN authselect select minimal --force
+# pam_loginuid는 컨테이너 환경에서 실패하므로 optional로 변경
+RUN sed -i 's/session    required     pam_loginuid.so/session    optional     pam_loginuid.so/' \
+        /etc/pam.d/sshd
+
 # ─── 계정 설정 ───────────────────────────────────────────────────────────────
 # root 비밀번호: toor
 RUN echo 'root:toor' | chpasswd
@@ -103,6 +110,9 @@ RUN groupadd devteam && \
     groupadd webteam && \
     usermod -aG devteam user1 && \
     usermod -aG webteam user2
+
+# /etc/shadow 권한을 640으로 설정 (기본 000은 unix_chkpwd가 읽지 못해 SSH 인증 실패)
+RUN chmod 640 /etc/shadow
 
 # ─── 부팅 시 자동 시작할 서비스 ─────────────────────────────────────────────
 # (sshd 만 기본 활성화; 나머지는 직접 systemctl enable 연습)
