@@ -83,6 +83,13 @@ RUN sed -i \
 # ─── Apache 기본 설정 ────────────────────────────────────────────────────────
 RUN echo "ServerName localhost" >> /etc/httpd/conf/httpd.conf
 
+# ─── ble.sh (bash syntax highlighting) ───────────────────────────────────────
+RUN git clone --depth=1 https://github.com/akinomyoga/ble.sh /tmp/blesh-src && \
+    make -C /tmp/blesh-src install PREFIX=/usr/local && \
+    rm -rf /tmp/blesh-src && \
+    echo '[[ $- == *i* ]] && source /usr/local/share/blesh/ble.sh' \
+    >> /etc/bashrc
+
 # ─── 쉘 환경 설정 (컬러 프롬프트 + 편의 alias) ──────────────────────────────
 RUN printf '%s\n' \
     "alias ls='ls --color=auto'" \
